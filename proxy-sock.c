@@ -57,7 +57,7 @@ int conectar() { //al servidor
 //creo funcion/es auxiloares para no repetior codigo de enviar y recibir
 
 //
-//funciones de claves.h
+//funciones de claves.hASDASDASDA
 //
 int destroy(void) {
 
