@@ -27,10 +27,14 @@ int conectar() { //al servidor de PARTE DEL CLIENTE
 
     ip = getenv("IP_TUPLAS"); //dado por el enunciado
     port_string = getenv("PORT_TUPLAS"); //dado por el enunciado
-    port = atoi(port_string);
 
+    // Verificar variables de entorno ANTES de usarlas
     if (ip == NULL) { printf("Error IP"); return -1;}   //manejo de errores
     if (port_string == NULL) { printf("Error Port_String"); return -1;}  //manejo de errores
+
+    port = atoi(port_string);
+    
+    printf("Debug: Intenando conectar a %s:%s\n", ip, port_string);
 
     //partee del socket
     sd = socket(AF_INET, SOCK_STREAM, 0);
