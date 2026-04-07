@@ -4,19 +4,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
+
 #include <string.h>
-#include <unistd.h>
+
+#include "common.h"
+
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include "claves.h"
-#include <sys/socket.h>
 
 
 
-int conectar() { //al servidor
+
+int conectar() { //al servidor de PARTE DEL CLIENTE
     char *ip;
     char *port_string;
     int port;
@@ -54,31 +55,153 @@ int conectar() { //al servidor
 }
 
 
-//creo funcion/es auxiloares para no repetior codigo de enviar y recibir
+
 
 //
 //funciones de claves.hASDASDASDA
 //
 int destroy(void) {
+    int a;
+    int b;
+    int op;
+    int resultado;
+    int sockfd = conectar();
+    if (sockfd == -1) {printf("error conectar socket"); return -1;}
 
+    op = 0; //la operacion de DESTROY sera asginada al numero 0
+
+    //primero enviamos
+    a = send_message(sockfd, (char *)&op, sizeof(int));
+    if (a == -1){printf("error enviar socket"); close(sockfd); return -1;}
+    //la recibo
+    b = receive_message(sockfd, (char *)&resultado, sizeof(int));
+    if (b == -1){printf("error recibir socket"); close(sockfd); return -1;}
+
+    close(sockfd);
+    return resultado;
 }
 
 int set_value(char *key, char *value1, int N_value2, float *V_value2, struct Paquete value3) {
+    int b;
+    int op;
+    int resultado;
+    int sockfd = conectar();
+    if (sockfd == -1) {printf("error conectar socket"); return -1;}
 
+    op = 1; //la operacion de SET sera asginada al numero 1
+
+    //a esta operacion le tenemos q pasar valores, asiq enviamos 1 a 1
+    send_message(sockfd, (char *)&op, sizeof(int));
+
+    send_message(sockfd, key, 256);
+    send_message(sockfd, value1, 256);
+
+
+    send_message(sockfd, (char *)&N_value2, sizeof(int));
+    send_message(sockfd, (char *)V_value2, N_value2 * sizeof(float));
+    send_message(sockfd, (char *)&value3, sizeof(struct Paquete));
+
+    //recibimos
+    b = receive_message(sockfd, (char *)&resultado, sizeof(int));
+    if (b == -1){printf("error recibir socket"); close(sockfd); return -1;}
+
+    close(sockfd);
+    return resultado;
 }
 
 int get_value(char *key, char *value1, int *N_value2, float *V_value2, struct Paquete *value3) {
+    int b;
+    int op;
+    int resultado;
+    int sockfd = conectar();
+    if (sockfd == -1) {printf("error conectar socket"); return -1;}
 
+    op = 2; //la operacion de GET sera asginada al numero 2
+
+    //le pasamos 1 qa 1
+    send_message(sockfd, (char *)&op, sizeof(int));
+    send_message(sockfd, key, 256);
+
+    //la recibo
+    b = receive_message(sockfd, (char *)&resultado, sizeof(int));
+    if (b == -1){printf("error recibir socket"); close(sockfd); return -1;}
+
+    //despues de recibirla, si todo es correcto debemos copiar
+    if (resultado == 0) { //es decir, no hay errores
+        receive_message(sockfd, value1, 256);
+        receive_message(sockfd, (char *)N_value2, sizeof(int));
+        receive_message(sockfd, (char *)V_value2, (*N_value2) * sizeof(float));
+        receive_message(sockfd, (char *)value3, sizeof(struct Paquete));
+    }
+
+    //cerramos
+    close(sockfd);
+    return resultado;
 }
 
 int modify_value(char *key, char *value1, int N_value2, float *V_value2, struct Paquete value3) {
+    int b;
+    int op;
+    int resultado;
+    int sockfd = conectar();
+    if (sockfd == -1) {printf("error conectar socket"); return -1;}
 
+    op = 3; //la operacion de MODIFY sera asginada al numero 3
+
+    //a esta operacion le tenemos q pasar valores, pasamos 1 a 1
+    send_message(sockfd, (char *)&op, sizeof(int));
+    send_message(sockfd, key, 256);
+    send_message(sockfd, value1, 256);
+    send_message(sockfd, (char *)&N_value2, sizeof(int));
+    send_message(sockfd, (char *)V_value2, N_value2 * sizeof(float));
+    send_message(sockfd, (char *)&value3, sizeof(struct Paquete));
+
+    //la recibo
+    b = receive_message(sockfd, (char *)&resultado, sizeof(int));
+    if (b == -1){printf("error recibir socket"); close(sockfd); return -1;}
+
+    close(sockfd);
+    return resultado;
 }
 
 int delete_key(char *key) {
+    int b;
+    int op;
+    int resultado;
+    int sockfd = conectar();
+    if (sockfd == -1) {printf("error conectar socket"); return -1;}
 
+    op = 4; //la operacion de DELETE sera asginada al numero 4
+
+    //paso args y envio
+    send_message(sockfd, (char *)&op, sizeof(int));
+    send_message(sockfd, key, 256);
+
+    //la recibo
+    b = receive_message(sockfd, (char *)&resultado, sizeof(int));
+    if (b == -1){printf("error recibir socket"); close(sockfd); return -1;}
+
+    close(sockfd);
+    return resultado;
 }
 
 int exist(char *key) {
+    int b;
+    int op;
+    int resultado;
+    int sockfd = conectar();
+    if (sockfd == -1) {printf("error conectar socket"); return -1;}
 
+    op = 5; //la operacion de EXISTS sera asginada al numero 5
+
+    //paso los args necesarios y envio
+    send_message(sockfd, (char *)&op, sizeof(int));
+    send_message(sockfd, key, 256);
+
+    //la recibo
+    b = receive_message(sockfd, (char *)&resultado, sizeof(int));
+    if (b == -1){printf("error recibir socket"); close(sockfd); return -1;}
+
+    close(sockfd);
+    return resultado;
 }

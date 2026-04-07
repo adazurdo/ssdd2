@@ -6,7 +6,9 @@ set(CMAKE_C_STANDARD 11)
 include_directories(.)
 
 # Biblioteca libclaves.so (implementación local)
-add_library(claves SHARED claves.c claves.h)
+add_library(claves SHARED claves.c claves.h
+        common.c
+        common.h)
 
 # Biblioteca libproxyclaves.so (implementación con sockets)
 add_library(proxyclaves SHARED proxy-sock.c claves.h)
