@@ -103,7 +103,10 @@ void *gestion_cliente(void *arg) {
             receive_message(socket_cliente, value1, 256);
             receive_message(socket_cliente, (char*)&N_value2, sizeof(int));
             receive_message(socket_cliente, (char*)&V_value2, N_value2 * sizeof(float));
-            receive_message(socket_cliente, (char*)&value3, sizeof(struct Paquete));
+            // Recibir struct Paquete campo por campo (independiente del lenguaje)
+            receive_message(socket_cliente, (char*)&value3.x, sizeof(int));
+            receive_message(socket_cliente, (char*)&value3.y, sizeof(int));
+            receive_message(socket_cliente, (char*)&value3.z, sizeof(int));
 
             //despues de recibir todo tengo qe llamar a la funcion
             resultado = set_value(key, value1, N_value2, V_value2, value3);
@@ -125,7 +128,10 @@ void *gestion_cliente(void *arg) {
                 send_message(socket_cliente, value1, 256);
                 send_message(socket_cliente, (char*)&N_value2, sizeof(int));
                 send_message(socket_cliente, (char*)&V_value2, N_value2 * sizeof(float));
-                send_message(socket_cliente, (char*)&value3, sizeof(struct Paquete));
+                // Enviar struct Paquete campo por campo (independiente del lenguaje)
+                send_message(socket_cliente, (char*)&value3.x, sizeof(int));
+                send_message(socket_cliente, (char*)&value3.y, sizeof(int));
+                send_message(socket_cliente, (char*)&value3.z, sizeof(int));
             }
             break;
 
@@ -135,7 +141,10 @@ void *gestion_cliente(void *arg) {
             receive_message(socket_cliente, value1, 256);
             receive_message(socket_cliente, (char*)&N_value2, sizeof(int));
             receive_message(socket_cliente, (char*)&V_value2, N_value2 * sizeof(float));
-            receive_message(socket_cliente, (char*)&value3, sizeof(struct Paquete));
+            // Recibir struct Paquete campo por campo (independiente del lenguaje)
+            receive_message(socket_cliente, (char*)&value3.x, sizeof(int));
+            receive_message(socket_cliente, (char*)&value3.y, sizeof(int));
+            receive_message(socket_cliente, (char*)&value3.z, sizeof(int));
 
             //despues de recibir todo tengo qe llamar a la funcion
             resultado = modify_value(key, value1, N_value2, V_value2, value3);

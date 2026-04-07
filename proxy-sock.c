@@ -103,7 +103,10 @@ int set_value(char *key, char *value1, int N_value2, float *V_value2, struct Paq
 
     send_message(sockfd, (char *)&N_value2, sizeof(int));
     send_message(sockfd, (char *)V_value2, N_value2 * sizeof(float));
-    send_message(sockfd, (char *)&value3, sizeof(struct Paquete));
+    // Enviar struct Paquete campo por campo (independiente del lenguaje)
+    send_message(sockfd, (char *)&value3.x, sizeof(int));
+    send_message(sockfd, (char *)&value3.y, sizeof(int));
+    send_message(sockfd, (char *)&value3.z, sizeof(int));
 
     //recibimos
     b = receive_message(sockfd, (char *)&resultado, sizeof(int));
@@ -135,7 +138,10 @@ int get_value(char *key, char *value1, int *N_value2, float *V_value2, struct Pa
         receive_message(sockfd, value1, 256);
         receive_message(sockfd, (char *)N_value2, sizeof(int));
         receive_message(sockfd, (char *)V_value2, (*N_value2) * sizeof(float));
-        receive_message(sockfd, (char *)value3, sizeof(struct Paquete));
+        // Recibir struct Paquete campo por campo (independiente del lenguaje)
+        receive_message(sockfd, (char *)&value3->x, sizeof(int));
+        receive_message(sockfd, (char *)&value3->y, sizeof(int));
+        receive_message(sockfd, (char *)&value3->z, sizeof(int));
     }
 
     //cerramos
@@ -158,7 +164,10 @@ int modify_value(char *key, char *value1, int N_value2, float *V_value2, struct 
     send_message(sockfd, value1, 256);
     send_message(sockfd, (char *)&N_value2, sizeof(int));
     send_message(sockfd, (char *)V_value2, N_value2 * sizeof(float));
-    send_message(sockfd, (char *)&value3, sizeof(struct Paquete));
+    // Enviar struct Paquete campo por campo (independiente del lenguaje)
+    send_message(sockfd, (char *)&value3.x, sizeof(int));
+    send_message(sockfd, (char *)&value3.y, sizeof(int));
+    send_message(sockfd, (char *)&value3.z, sizeof(int));
 
     //la recibo
     b = receive_message(sockfd, (char *)&resultado, sizeof(int));
